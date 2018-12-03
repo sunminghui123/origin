@@ -4,8 +4,8 @@ from datetime import datetime
 
 app = Flask(__name__)
 # 数据库实例
-db = pymongo.MongoClient('127.0.0.1',27017)
-connect=db.todo
+connect = pymongo.MongoClient('127.0.0.1',27017)
+db=connect.todo
 # mongo todo文档结构
 class Todo(object):
     """
@@ -21,8 +21,9 @@ class Todo(object):
             'finish_time':None
         }
 
+
 @app.route('/')
-def hello_world():
+def index():
     return render_template('index.html')
 
 @app.route('/get')
@@ -31,11 +32,19 @@ def get():
     pass
 
 
-@app.route('/add')
+@app.route('/add',methods=['POST'])
 def add():
     """增加一条todo"""
-    pass
-
+    form = request.form
+    content = form['content']
+    print(content)
+    new_id=db.todo.insert( {'content':content,
+            'create_time':datetime.now(),
+            'status':0,        # 0未完成 1已经文成
+            'finish_time':None})
+    print(new_id)
+    if new_id:
+       return redirect(url_for('index'))
 @app.route('/finish')
 def finish():
     """更新状态已完成"""
