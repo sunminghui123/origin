@@ -20,20 +20,33 @@
             <td>删除</td>
             <td>完成</td>
         </th>
-        <tr>
-            <td>1</td>
-            <td></td>
-            <td>打卡</td>
-           <td><a href="#">×</a></td>
-            <td><a href="#">√</a></td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td></td>
-            <td>双12加购</td>
-            <td><a href="#">×</a></td>
-            <td><a href="#">√</a></td>
-        </tr>
+        {% for todo in todo_list %}
+         <tr>
+          {%if todo.status==0%}
+             <td>未完成</td>
+          {%elif todo.status==1%}
+             <td>已完成</td>
+          {% endif %}
+          <td>{{todo.content}}</td>
+          <td><a href="{{ url_for('delete',content=todo.content) }}">×</a></td>
+          <td><a href="#">√</a></td>
+{#         {{ todo._id }}#}
+         </tr>
+        {% endfor %}
+{#        <tr>#}
+{#            <td>1</td>#}
+{#            <td>完成</td>#}
+{#            <td>打卡</td>#}
+{#           <td><a href="#">×</a></td>#}
+{#            <td><a href="#">√</a></td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>2</td>#}
+{#            <td>未完成</td>#}
+{#            <td>双12加购</td>#}
+{#            <td><a href="#">×</a></td>#}
+{#            <td><a href="#">√</a></td>#}
+{#        </tr>#}
     </table>
 </div>
 {% endblock %}

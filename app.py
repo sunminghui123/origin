@@ -24,13 +24,14 @@ class Todo(object):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return redirect(url_for('get'))
 
 @app.route('/get')
 def get():
     """展示一条todo"""
-    pass
-
+    todo_list = db.todo.find({})
+    print(todo_list)
+    return render_template('index.html',todo_list=todo_list)
 
 @app.route('/add',methods=['POST'])
 def add():
@@ -52,9 +53,14 @@ def finish():
 
 @app.route('/delete')
 def delete():
-    """删除无用todo"""
 
-    pass
+   args = request.args
+   content = args['content']
+   newid=db.todo.remove({
+       'content':content
+   })
+   print(newid)
+   return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run()
