@@ -1,5 +1,6 @@
 from flask import Flask,url_for,redirect,render_template,request
 import pymongo
+from bson.objectid import ObjectId
 from datetime import datetime
 
 app = Flask(__name__)
@@ -39,7 +40,7 @@ def add():
     form = request.form
     content = form['content']
     print(content)
-    new_id=db.todo.insert( {'content':content,
+    new_id = db.todo.insert( {'content':content,
             'create_time':datetime.now(),
             'status':0,        # 0未完成 1已经文成
             'finish_time':None})
@@ -49,15 +50,23 @@ def add():
 @app.route('/finish')
 def finish():
     """更新状态已完成"""
-    pass
-
+    args=request.args
+    _id = args['_id']
+    affect = db.todo.update(
+        {"_id":ObjectId(_id)},
+        {"$set":{
+        "status":1,
+        "finish_time":datetime.now()}
+        }
+    )
+    return redirect(url_for('index'))
 @app.route('/delete')
 def delete():
 
    args = request.args
-   content = args['content']
+   _id = args['_id']
    newid=db.todo.remove({
-       'content':content
+       '_id':ObjectId(_id)
    })
    print(newid)
    return redirect(url_for('index'))
